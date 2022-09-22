@@ -8,7 +8,7 @@ export default function App() {
     location: ["aifield0", "aifield1", "aifield2"],
     hit: 0,
   };
-  //Map size const
+  //Map size const COMMENT
   const MAP_SIZE = 128;
   let movesPlayed = [];
   const [fieldSize, setFieldSize] = useState([...Array(MAP_SIZE)]);
