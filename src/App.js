@@ -11,19 +11,32 @@ export default function App() {
 
   const MAP_SIZE = 132;
   let movesPlayed = [];
-  const [playerShips, setPlayerShips] = useState([]);
+  const [playerShips, setPlayerShips] = useState([
+    {
+      length: 3,
+      location: ["aifield0", "aifield1", "aifield2"],
+      hit: 0,
+    },
+    {
+      length: 2,
+      location: ["aifield4", "aifield3"],
+      hit: 0,
+    },
+  ]);
   const [fieldSize, setFieldSize] = useState([...Array(MAP_SIZE)]);
   function gameEngine(id) {
-    playerShips[0].location.map((element, index) => {
-      if (element === `${id}`) {
-        playerShips[0].hit += 1;
-        if (playerShips[0].hit >= playerShips[0].length) {
-          console.log("ship destroyed");
+    playerShips.map((element) => {
+      element.location.map((index) => {
+        if (index === `${id}`) {
+          element.hit += 1;
+          if (element.hit >= element.length) {
+            console.log("hit", "ship destroyed");
+            return;
+          }
+          console.log("hit");
           return;
         }
-        console.log("hit");
-        return;
-      }
+      });
     });
   }
   function handlerOnClick(e) {
