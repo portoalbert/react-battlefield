@@ -9,7 +9,7 @@ export default function App() {
     hit: 0,
   };
 
-  const MAP_SIZE = 128;
+  const MAP_SIZE = 132;
   let movesPlayed = [];
   const [playerShips, setPlayerShips] = useState([]);
   const [fieldSize, setFieldSize] = useState([...Array(MAP_SIZE)]);
@@ -51,16 +51,26 @@ export default function App() {
   }
   return (
     <div className="main">
-      <GameBoard
-        array={fieldSize}
-        field="playerfield"
-        onClick={(e) => handlerOnClick(e)}
-      />
-      <GameBoard
-        array={fieldSize}
-        field="aifield"
-        onClick={(e) => handlerOnClick(e)}
-      />
+      <div className="title">
+        <h1>Battleship</h1>
+        <h2>Can you defeat the most intelligent Ai space has to offer?</h2>
+      </div>
+      <div className="boards">
+        <div className="boardone">
+          <GameBoard
+            array={fieldSize}
+            field="playerfield"
+            onClick={(e) => handlerOnClick(e)}
+          />
+        </div>
+        <div className="boardtwo">
+          <GameBoard
+            array={fieldSize}
+            field="aifield"
+            onClick={(e) => handlerOnClick(e)}
+          />
+        </div>
+      </div>
       <button onClick={() => tester()}>Testing</button>
     </div>
   );
