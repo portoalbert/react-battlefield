@@ -8,20 +8,20 @@ export default function App() {
     location: ["aifield0", "aifield1", "aifield2"],
     hit: 0,
   };
-  //Map size const
-  const MAP_SIZE = 128;
+
+  const MAP_SIZE = 132;
   let movesPlayed = [];
+  const [playerShips, setPlayerShips] = useState([]);
   const [fieldSize, setFieldSize] = useState([...Array(MAP_SIZE)]);
-  const [wasHit, setWasHit] = useState("false");
   function gameEngine(id) {
-    testShip.location.map((element, index) => {
+    playerShips[0].location.map((element, index) => {
       if (element === `${id}`) {
-        testShip.hit += 1;
-        if (testShip.hit >= testShip.length) {
+        playerShips[0].hit += 1;
+        if (playerShips[0].hit >= playerShips[0].length) {
           console.log("ship destroyed");
           return;
         }
-        console.log("hit", testShip.hit);
+        console.log("hit");
         return;
       }
     });
@@ -35,18 +35,43 @@ export default function App() {
     movesPlayed.push(e.target.id);
     gameEngine(e.target.id);
   }
+
+  function shipMaker(locationOne, locationTwo, locationThree) {
+    const tempShipArray = playerShips;
+    const tempShip = {};
+    tempShip.location = [locationOne, locationTwo, locationThree];
+    tempShip.length = tempShip.location.length;
+    tempShip.hit = 0;
+    tempShipArray.push(tempShip);
+    setPlayerShips(tempShipArray);
+  }
+  function tester() {
+    shipMaker("aifield0", "aifield1", "aifield2");
+    console.log(playerShips);
+  }
   return (
     <div className="main">
-      <GameBoard
-        array={fieldSize}
-        field="playerfield"
-        onClick={(e) => handlerOnClick(e)}
-      />
-      <GameBoard
-        array={fieldSize}
-        field="aifield"
-        onClick={(e) => handlerOnClick(e)}
-      />
+      <div className="title">
+        <h1>Battleship</h1>
+        <h2>Can you defeat the most intelligent Ai space has to offer?</h2>
+      </div>
+      <div className="boards">
+        <div className="boardone">
+          <GameBoard
+            array={fieldSize}
+            field="playerfield"
+            onClick={(e) => handlerOnClick(e)}
+          />
+        </div>
+        <div className="boardtwo">
+          <GameBoard
+            array={fieldSize}
+            field="aifield"
+            onClick={(e) => handlerOnClick(e)}
+          />
+        </div>
+      </div>
+      <button onClick={() => tester()}>Testing</button>
     </div>
   );
 }
