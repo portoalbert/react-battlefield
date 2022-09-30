@@ -8,21 +8,10 @@ export default function App() {
     location: ["aifield0", "aifield1", "aifield2"],
     hit: 0,
   };
-
+  const [hasStarted, setHasStarted] = useState(true);
   const MAP_SIZE = 132;
   let movesPlayed = [];
-  const [playerShips, setPlayerShips] = useState([
-    {
-      length: 3,
-      location: ["aifield0", "aifield1", "aifield2"],
-      hit: 0,
-    },
-    {
-      length: 2,
-      location: ["aifield4", "aifield3"],
-      hit: 0,
-    },
-  ]);
+  const [playerShips, setPlayerShips] = useState([]);
   const [fieldSize, setFieldSize] = useState([...Array(MAP_SIZE)]);
   function gameEngine(id) {
     playerShips.map((element) => {
@@ -48,7 +37,12 @@ export default function App() {
     movesPlayed.push(e.target.id);
     gameEngine(e.target.id);
   }
-
+  function handlerPlayerSelection(e) {
+    const currentSelection = e.target.id;
+    const currentSelectionTwo = `${parseInt(currentSelection) + 1}`;
+    const currentSelectionThree = `${parseInt(currentSelection) + 2}`;
+    shipMaker(currentSelection, currentSelectionTwo, currentSelectionThree);
+  }
   function shipMaker(locationOne, locationTwo, locationThree) {
     const tempShipArray = playerShips;
     const tempShip = {};
@@ -57,10 +51,10 @@ export default function App() {
     tempShip.hit = 0;
     tempShipArray.push(tempShip);
     setPlayerShips(tempShipArray);
+    console.log(playerShips);
   }
   function tester() {
-    shipMaker("aifield0", "aifield1", "aifield2");
-    console.log(playerShips);
+    setHasStarted(false);
   }
   return (
     <div className="main">
@@ -68,23 +62,39 @@ export default function App() {
         <h1>Battleship</h1>
         <h2>Can you defeat the most intelligent Ai space has to offer?</h2>
       </div>
-      <div className="boards">
-        <div className="boardone">
-          <GameBoard
-            array={fieldSize}
-            field="playerfield"
-            onClick={(e) => handlerOnClick(e)}
-          />
+      {hasStarted ? (
+        <div className="firstpage">
+          <h1>Place your ships!</h1>
+          <div className="boardone">
+            <GameBoard
+              array={fieldSize}
+              field="playerfield"
+              onClick={(e) => handlerPlayerSelection(e)}
+            />
+          </div>
+          <button onClick={() => tester()}> Start Battling!</button>
         </div>
-        <div className="boardtwo">
-          <GameBoard
-            array={fieldSize}
-            field="aifield"
-            onClick={(e) => handlerOnClick(e)}
-          />
+      ) : (
+        <div className="secondpage">
+          <div className="boards">
+            <div className="boardone">
+              <GameBoard
+                array={fieldSize}
+                field="playerfield"
+                onClick={(e) => handlerOnClick(e)}
+              />
+            </div>
+            <div className="boardtwo">
+              <GameBoard
+                array={fieldSize}
+                field="aifield"
+                onClick={(e) => handlerOnClick(e)}
+              />
+            </div>
+          </div>
+          <button onClick={() => tester()}>Testing</button>
         </div>
-      </div>
-      <button onClick={() => tester()}>Testing</button>
+      )}
     </div>
   );
 }
