@@ -1,25 +1,25 @@
 import React from "react";
 import GameBoard from "./components/GameBoard";
 import { useState } from "react";
+import { ARRAYOFSHIPS } from "./assets/ARRAYOFSHIPS";
 
 export default function App() {
-  const testShip = {
-    length: 3,
-    location: ["aifield0", "aifield1", "aifield2"],
-    hit: 0,
-  };
   const [hasStarted, setHasStarted] = useState(true);
   const MAP_SIZE = 132;
+  let currentLocation = [];
   let movesPlayed = [];
-  const [playerShips, setPlayerShips] = useState([]);
+  const [currentShip, setCurrentShip] = useState("Carrier");
+  const [playerShips, setPlayerShips] = useState(ARRAYOFSHIPS);
   const [fieldSize, setFieldSize] = useState([...Array(MAP_SIZE)]);
   function gameEngine(id) {
+    document.getElementById(id).style.backgroundColor = "blue";
     playerShips.map((element) => {
       element.location.map((index) => {
         if (index === `${id}`) {
           element.hit += 1;
+          document.getElementById(id).style.backgroundColor = "purple";
           if (element.hit >= element.length) {
-            console.log("hit", "ship destroyed");
+            console.log("hit", `${element.name} destroyed`);
             return;
           }
           console.log("hit");
@@ -30,6 +30,7 @@ export default function App() {
   }
   function handlerOnClick(e) {
     const currentMove = e.target.id;
+    console.log(currentMove);
     if (movesPlayed.findIndex((move) => move === currentMove) !== -1) {
       console.log("invalid move");
       return;
@@ -38,23 +39,68 @@ export default function App() {
     gameEngine(e.target.id);
   }
   function handlerPlayerSelection(e) {
-    const currentSelection = e.target.id;
-    const currentSelectionTwo = `${parseInt(currentSelection) + 1}`;
-    const currentSelectionThree = `${parseInt(currentSelection) + 2}`;
-    shipMaker(currentSelection, currentSelectionTwo, currentSelectionThree);
+    playerShips.map((element) => {
+      if (element.name === currentShip) {
+        element.location = currentLocation;
+        if (currentShip === "Carrier") {
+          setCurrentShip("Submarine");
+        }
+        if (currentShip === "Submarine") {
+          setCurrentShip("Destroyer");
+        }
+        if (currentShip === "Destroyer") {
+          tester();
+        }
+      }
+    });
   }
-  function shipMaker(locationOne, locationTwo, locationThree) {
-    const tempShipArray = playerShips;
-    const tempShip = {};
-    tempShip.location = [locationOne, locationTwo, locationThree];
-    tempShip.length = tempShip.location.length;
-    tempShip.hit = 0;
-    tempShipArray.push(tempShip);
-    setPlayerShips(tempShipArray);
-    console.log(playerShips);
+  function idPicker(id) {
+    let length = 3;
+    const capOne = 11 - length;
+    const capTwo = 22 - length;
+    const capThree = 131 - length;
+    currentLocation = [];
+    if (id > capOne && id < 11) {
+      for (let i = 0; i < 3; i++) {
+        const tempId = parseInt(id) - i;
+        currentLocation.push(`${tempId}`);
+      }
+      return;
+    }
+    if (id > capTwo && id < 22) {
+      for (let i = 0; i < 3; i++) {
+        const tempId = parseInt(id) - i;
+        currentLocation.push(`${tempId}`);
+      }
+      return;
+    }
+    if (id > capThree) {
+      for (let i = 0; i < 3; i++) {
+        const tempId = parseInt(id) - i;
+        currentLocation.push(`${tempId}`);
+      }
+      return;
+    } else {
+      for (let i = 0; i < 3; i++) {
+        const tempId = parseInt(id) + i;
+        currentLocation.push(`${tempId}`);
+      }
+    }
   }
   function tester() {
     setHasStarted(false);
+  }
+  function onEnterHandler(e) {
+    idPicker(e.target.id);
+    currentLocation.map((element) => {
+      document.getElementById(element).style.backgroundColor = "red";
+    });
+  }
+  function onLeaveHandler(e) {
+    idPicker(e.target.id);
+    currentLocation.map((element) => {
+      document.getElementById(element).style.backgroundColor = "";
+    });
   }
   return (
     <div className="main">
@@ -64,12 +110,14 @@ export default function App() {
       </div>
       {hasStarted ? (
         <div className="firstpage">
-          <h1>Place your ships!</h1>
+          <h1>Place your {currentShip}!</h1>
           <div className="boardone">
             <GameBoard
               array={fieldSize}
               field="playerfield"
               onClick={(e) => handlerPlayerSelection(e)}
+              onMouseEnter={(e) => onEnterHandler(e)}
+              onMouseLeave={(e) => onLeaveHandler(e)}
             />
           </div>
           <button onClick={() => tester()}> Start Battling!</button>
