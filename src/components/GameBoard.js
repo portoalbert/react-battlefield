@@ -8,8 +8,10 @@ export default function GameBoard(props) {
           <div
             className="field"
             key={props.field + index}
-            id={props.field + index}
+            id={index}
             onClick={props.onClick}
+            onMouseEnter={props.onMouseEnter}
+            onMouseLeave={props.onMouseLeave}
           ></div>
         );
       })}
